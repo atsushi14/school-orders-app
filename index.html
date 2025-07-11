@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>職員室おやつ注文</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #message {
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>飲み物・お菓子 注文フォーム</h2>
+
+  <input type="text" id="userName" placeholder="ユーザー名（例：田中先生）">
+  <input type="text" id="productName" placeholder="商品名（例：コーヒー）">
+  <input type="number" id="quantity" min="1" value="1">
+  <input type="text" id="room" placeholder="職員室名（例：職員室）">
+
+  <button onclick="submitOrder()">注文する</button>
+
+  <p id="message"></p>
+
+  <script>
+    const GAS_URL = '★ここにGASのURLを入れてください★';
+
+    async function submitOrder() {
+      const userName = document.getElementById('userName').value.trim();
+      const productName = document.getElementById('productName').value.trim();
+      const quantity = document.getElementById('quantity').value.trim();
+      const room = document.getElementById('room').value.trim();
+
+      if (!userName || !productName || !room) {
+        document.getElementById('message').innerText = '❗ すべての項目を入力してください';
+        return;
+      }
+
+      const orderData = {
+        userName: userName,
+        productName: productName,
+        quantity: quantity,
+        room: room
+      };
+
+      try {
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          document.getElementById('message').innerText = '✅ 注文が送信されました！';
+        } else {
+          document.getElementById('message').innerText = '❌ エラーが発生しました';
+        }
+      } catch (error) {
+        document.getElementById('message').innerText = '❌ 通信エラーです';
+      }
+    }
+  </script>
+</body>
+</html>
